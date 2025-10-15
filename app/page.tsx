@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 // Minimal Lucide-style icons (inline SVG to avoid external deps)
-const CheckCircle2 = (props: any) => (
+const CheckCircle2 = (props: { className?: string }) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
        strokeLinecap="round" strokeLinejoin="round"
        className={props.className || ""} aria-hidden="true">
@@ -12,7 +12,7 @@ const CheckCircle2 = (props: any) => (
   </svg>
 );
 
-const HelpCircle = (props: any) => (
+const HelpCircle = (props: { className?: string }) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
        strokeLinecap="round" strokeLinejoin="round"
        className={props.className || ""} aria-hidden="true">
@@ -248,7 +248,7 @@ export default function Home() {
         </div>
         {rooms === 6 && (
           <p className="text-xs text-neutral-500 mt-2">
-            We can absolutely help you, but for events of this size, it's good to have a call. Please use this link to{" "}
+            We can absolutely help you, but for events of this size, it&apos;s good to have a call. Please use this link to{" "}
             <a href="https://calendly.com/mbashian/30min?month=2025-10" target="_blank" rel="noopener noreferrer" className="underline">schedule a meeting</a>.
           </p>
         )}
