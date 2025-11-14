@@ -88,26 +88,23 @@ export default function Home() {
     );
   };
 
-  // International phone validation (ITU-T E.164 standard)
+  // US phone validation (10 digits required)
   const isValidPhone = (s: string) => {
     const phone = String(s || "").trim();
 
-    // Allow common international formats:
-    // (123) 456-7890, 123-456-7890, +1 123 456 7890, etc.
-    const phoneRegex =
-      /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,9}[-\s\.]?[0-9]{0,9}$/;
+    // US phone format: (XXX) XXX-XXXX or XXX-XXX-XXXX or XXX.XXX.XXXX
+    // Requires exactly 10 digits
+    const phoneRegex = /^(([0-9]{1})*[- .(]*([0-9]{3})[- .)]*[0-9]{3}[- .]*[0-9]{4})+$/;
 
     if (!phoneRegex.test(phone)) return false;
 
-    // Extract digits and validate count (7-15 digits per ITU-T E.164)
+    // Extract digits and validate count (must be exactly 10)
     const digits = phone.replace(/\D/g, "");
-    if (digits.length < 7 || digits.length > 15) return false;
+    if (digits.length !== 10) return false;
 
-    // Validate US area codes if applicable (can't start with 0 or 1)
-    if (digits.length === 10 || (digits.length === 11 && digits.startsWith("1"))) {
-      const areaCode = digits.length === 11 ? digits.substring(1, 4) : digits.substring(0, 3);
-      if (areaCode[0] === "0" || areaCode[0] === "1") return false;
-    }
+    // Validate US area codes (can't start with 0 or 1)
+    const areaCode = digits.substring(0, 3);
+    if (areaCode[0] === "0" || areaCode[0] === "1") return false;
 
     return true;
   };
@@ -128,9 +125,18 @@ export default function Home() {
   const getPhoneErrorMessage = (): string | null => {
     if (!phoneTouched || contactPhone === "") return null;
     const digits = contactPhone.replace(/\D/g, "");
-    if (digits.length < 7) return `Phone must have at least 7 digits (currently ${digits.length})`;
-    if (digits.length > 15) return "Phone number is too long (max 15 digits)";
-    if (!isValidPhone(contactPhone)) return "Please enter a valid phone number";
+    if (digits.length < 10) return `Phone must have 10 digits (currently ${digits.length})`;
+    if (digits.length > 10) return "Phone must have exactly 10 digits";
+
+    // Check for invalid area codes
+    if (digits.length === 10) {
+      const areaCode = digits.substring(0, 3);
+      if (areaCode[0] === "0" || areaCode[0] === "1") {
+        return "Area code cannot start with 0 or 1";
+      }
+    }
+
+    if (!isValidPhone(contactPhone)) return "Please enter a valid US phone number";
     return null;
   };
 
@@ -882,7 +888,7 @@ ${notesText}`.trim();
               </div>
               <h3 className="text-2xl font-bold text-neutral-900">Thank You!</h3>
               <p className="text-base text-neutral-700">
-                Your quote request has been sent successfully. We&apos;ll get back to you shortly!
+                Thanks for contacting us! We&apos;ll be in touch within 36-48 hours about your estimate
               </p>
               <button
                 onClick={() => setShowThankYou(false)}
