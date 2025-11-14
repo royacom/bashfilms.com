@@ -99,25 +99,37 @@ export default function Home() {
   // Listen for success message from parent CMS
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
-      console.log("🔵 IFRAME: Message received", {
-        type: event.data?.type,
-        origin: event.origin,
-        fullData: event.data,
-      });
+      // console.log("🔵 IFRAME: Message received", {
+      //   type: event.data?.type,
+      //   origin: event.origin,
+      //   fullData: event.data,
+      // });
 
       if (event.data.type === "QUOTE_SUBMITTED_SUCCESS") {
-        console.log("✅ IFRAME: Success confirmation received, showing thank you");
+        // console.log("✅ IFRAME: Success confirmation received, showing thank you");
         setShowThankYou(true);
-        console.log("✅ IFRAME: showThankYou set to true");
+        // console.log("✅ IFRAME: showThankYou set to true");
+
+        // Reset form after successful submission
+        setContactName("");
+        setContactEmail("");
+        setContactPhone("");
+        setEventTitle("");
+        setEventURL("");
+        setNotesText("");
+        setEmailTouched(false);
+        setPhoneTouched(false);
+        setEventTitleTouched(false);
+
         setTimeout(() => {
-          console.log("⏰ IFRAME: Auto-hiding thank you after 10 seconds");
+          // console.log("⏰ IFRAME: Auto-hiding thank you after 10 seconds");
           setShowThankYou(false);
         }, 10000);
       }
     };
 
     window.addEventListener("message", handleMessage);
-    console.log("🎧 IFRAME: Message listener attached");
+    // console.log("🎧 IFRAME: Message listener attached");
     return () => window.removeEventListener("message", handleMessage);
   }, []);
 
@@ -230,7 +242,7 @@ ${notesText}`.trim();
   const handleSubmitQuote = () => {
     if (!canSubmit) return;
 
-    console.log("🚀 Submit clicked - sending to parent");
+    // console.log("🚀 Submit clicked - sending to parent");
 
     // Show popup
     setShowRedirectPopup(true);
@@ -247,13 +259,13 @@ ${notesText}`.trim();
         },
       };
 
-      console.log("📤 Sending postMessage:", messageData);
-      console.log("📍 Target origin: *");
-      console.log("🪟 Parent window:", window.parent !== window ? "Found" : "NOT FOUND (not in iframe)");
+      // console.log("📤 Sending postMessage:", messageData);
+      // console.log("📍 Target origin: *");
+      // console.log("🪟 Parent window:", window.parent !== window ? "Found" : "NOT FOUND (not in iframe)");
 
       try {
         window.parent.postMessage(messageData, "*");
-        console.log("✅ postMessage sent successfully");
+        // console.log("✅ postMessage sent successfully");
       } catch (error) {
         console.error("❌ postMessage failed:", error);
       }
@@ -807,10 +819,6 @@ ${notesText}`.trim();
       )}
 
       {/* Thank You Popup */}
-      {(() => {
-        console.log("🟢 IFRAME: Rendering check - showThankYou =", showThankYou);
-        return null;
-      })()}
       {showThankYou && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl p-8 max-w-md mx-4 shadow-2xl border-2 border-green-500">
@@ -823,10 +831,7 @@ ${notesText}`.trim();
                 Your quote request has been sent successfully. We&apos;ll get back to you shortly!
               </p>
               <button
-                onClick={() => {
-                  console.log("🔴 IFRAME: Close button clicked");
-                  setShowThankYou(false);
-                }}
+                onClick={() => setShowThankYou(false)}
                 className="mt-2 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
               >
                 Close
