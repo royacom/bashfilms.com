@@ -270,32 +270,162 @@ export default function Home() {
   const totalPrice = isLVOneDayOneRoomDefault ? 2000 : rawTotalPrice;
   const displayPrice = isComplexScope ? "Contact for quote" : currency(totalPrice);
 
-  // Build email body for CMS form
+  // Build HTML email body for CMS form
   const buildEmailBody = () => {
     const monthLabel = months.find((m) => m.value === eventMonth)?.label || String(eventMonth);
-    return `Quote Request - ${eventTitle || "Conference Event"}
+    const hotelText = hotelOption === "bash_pays" ? "Bash Films pays" : "Client provides";
 
-CONTACT INFORMATION:
-Name: ${contactName}
-Email: ${contactEmail}
-Phone: ${contactPhone}
-Event: ${eventTitle}
-Website: ${eventURL}
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quote Request</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5;">
+  <table role="presentation" style="width: 100%; border-collapse: collapse;">
+    <tr>
+      <td style="padding: 20px 0;">
+        <table role="presentation" style="width: 100%; max-width: 650px; margin: 0 auto; border-collapse: collapse; background-color: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
 
-EVENT DETAILS:
-Start Date: ${monthLabel} ${eventDay}, ${eventYear}
-Location: ${location}
-Days: ${days}
-Simultaneous Locations: ${rooms}
-Turnaround: ${turnaround}
-${location !== "Las Vegas" ? `Hotel: ${hotelOption}` : ""}
-Meals: ${meals === "yes" ? "Event provides breakfast & lunch (discount applied)" : "Crew per diems included"}
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); color: #ffffff; padding: 30px; text-align: center;">
+              <h1 style="margin: 0; font-size: 24px; font-weight: 600;">Quote Request</h1>
+              <p style="margin: 8px 0 0; opacity: 0.85; font-size: 16px;">${eventTitle || "Conference Event"}</p>
+            </td>
+          </tr>
 
-ESTIMATE:
-Starting Price: ${displayPrice}
+          <!-- Contact Information Card -->
+          <tr>
+            <td style="padding: 30px; background-color: #f8f9fa;">
+              <table role="presentation" style="width: 100%; background: #ffffff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 20px;">
+                    <h2 style="margin: 0 0 15px 0; font-size: 18px; font-weight: 600; color: #1a1a1a; border-bottom: 2px solid #e9ecef; padding-bottom: 10px;">📋 Contact Information</h2>
+                    <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                      <tr>
+                        <td style="padding: 8px 0; font-size: 13px; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; width: 120px;">Name:</td>
+                        <td style="padding: 8px 0; font-size: 15px; color: #1a1a1a;">${contactName || "—"}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0; font-size: 13px; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Email:</td>
+                        <td style="padding: 8px 0; font-size: 15px; color: #1a1a1a;"><a href="mailto:${contactEmail}" style="color: #007bff; text-decoration: none;">${contactEmail}</a></td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0; font-size: 13px; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Phone:</td>
+                        <td style="padding: 8px 0; font-size: 15px; color: #1a1a1a;"><a href="tel:${contactPhone}" style="color: #007bff; text-decoration: none;">${contactPhone}</a></td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0; font-size: 13px; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Event:</td>
+                        <td style="padding: 8px 0; font-size: 15px; color: #1a1a1a; font-weight: 500;">${eventTitle}</td>
+                      </tr>
+                      ${eventURL ? `
+                      <tr>
+                        <td style="padding: 8px 0; font-size: 13px; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Website:</td>
+                        <td style="padding: 8px 0; font-size: 15px; color: #1a1a1a;"><a href="${eventURL}" style="color: #007bff; text-decoration: none;">${eventURL}</a></td>
+                      </tr>
+                      ` : ""}
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
 
-NOTES:
-${notesText}`.trim();
+          <!-- Event Details Card -->
+          <tr>
+            <td style="padding: 0 30px 30px 30px; background-color: #f8f9fa;">
+              <table role="presentation" style="width: 100%; background: #ffffff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 20px;">
+                    <h2 style="margin: 0 0 15px 0; font-size: 18px; font-weight: 600; color: #1a1a1a; border-bottom: 2px solid #e9ecef; padding-bottom: 10px;">📅 Event Details</h2>
+                    <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                      <tr>
+                        <td style="padding: 8px 0; font-size: 13px; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; width: 200px;">Start Date:</td>
+                        <td style="padding: 8px 0; font-size: 15px; color: #1a1a1a;">${monthLabel} ${eventDay}, ${eventYear}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0; font-size: 13px; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Location:</td>
+                        <td style="padding: 8px 0; font-size: 15px; color: #1a1a1a;">${location}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0; font-size: 13px; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Days:</td>
+                        <td style="padding: 8px 0; font-size: 15px; color: #1a1a1a;">${days}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0; font-size: 13px; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Simultaneous Locations:</td>
+                        <td style="padding: 8px 0; font-size: 15px; color: #1a1a1a;">${rooms}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0; font-size: 13px; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Turnaround:</td>
+                        <td style="padding: 8px 0; font-size: 15px; color: #1a1a1a;">${turnaround === "1w" ? "1 week" : turnaround === "2w" ? "2 weeks" : turnaround === "3w" ? "3 weeks" : "4 weeks"}</td>
+                      </tr>
+                      ${location !== "Las Vegas" ? `
+                      <tr>
+                        <td style="padding: 8px 0; font-size: 13px; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Hotel:</td>
+                        <td style="padding: 8px 0; font-size: 15px; color: #1a1a1a;">${hotelText}</td>
+                      </tr>
+                      ` : ""}
+                      <tr>
+                        <td style="padding: 8px 0; font-size: 13px; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Meals:</td>
+                        <td style="padding: 8px 0; font-size: 15px; color: #1a1a1a;">${meals === "yes" ? "Event provides breakfast & lunch (discount applied)" : "Crew per diems included"}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Pricing Card -->
+          <tr>
+            <td style="padding: 0 30px 30px 30px; background-color: #f8f9fa;">
+              <table role="presentation" style="width: 100%; background: #ffffff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 20px;">
+                    <h2 style="margin: 0 0 15px 0; font-size: 18px; font-weight: 600; color: #1a1a1a; border-bottom: 2px solid #e9ecef; padding-bottom: 10px;">💰 Pricing Estimate</h2>
+                    <div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; text-align: center;">
+                      <div style="font-size: 14px; color: #6c757d; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Starting Price</div>
+                      <div style="font-size: 32px; font-weight: 700; color: #1a1a1a;">${displayPrice}</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          ${notesText ? `
+          <!-- Notes Card -->
+          <tr>
+            <td style="padding: 0 30px 30px 30px; background-color: #f8f9fa;">
+              <table role="presentation" style="width: 100%; background: #ffffff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 20px;">
+                    <h2 style="margin: 0 0 15px 0; font-size: 18px; font-weight: 600; color: #1a1a1a; border-bottom: 2px solid #e9ecef; padding-bottom: 10px;">📝 Additional Notes</h2>
+                    <div style="font-size: 15px; color: #333; line-height: 1.6; white-space: pre-wrap;">${notesText}</div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          ` : ""}
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 20px 30px; background-color: #f8f9fa; text-align: center; font-size: 13px; color: #6c757d;">
+              <p style="margin: 0;">Generated from Bash Films Pricing Calculator</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+    `.trim();
   };
 
   // Handle form submission
