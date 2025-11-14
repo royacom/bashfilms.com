@@ -38,6 +38,7 @@ export default function Home() {
 
   // Popup state
   const [showRedirectPopup, setShowRedirectPopup] = useState(false);
+  const [showThankYou, setShowThankYou] = useState(false);
 
   // Hydration fix: initialize with safe defaults
   const [mounted, setMounted] = useState(false);
@@ -93,6 +94,31 @@ export default function Home() {
     setEventYear(offsetDate.getFullYear());
     setEventMonth(offsetDate.getMonth() + 1);
     setEventDay(offsetDate.getDate());
+  }, []);
+
+  // Listen for success message from parent CMS
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      console.log("🔵 IFRAME: Message received", {
+        type: event.data?.type,
+        origin: event.origin,
+        fullData: event.data,
+      });
+
+      if (event.data.type === "QUOTE_SUBMITTED_SUCCESS") {
+        console.log("✅ IFRAME: Success confirmation received, showing thank you");
+        setShowThankYou(true);
+        console.log("✅ IFRAME: showThankYou set to true");
+        setTimeout(() => {
+          console.log("⏰ IFRAME: Auto-hiding thank you after 10 seconds");
+          setShowThankYou(false);
+        }, 10000);
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    console.log("🎧 IFRAME: Message listener attached");
+    return () => window.removeEventListener("message", handleMessage);
   }, []);
 
   // Auto-bump off 1 day if user switches away from Las Vegas
@@ -204,23 +230,33 @@ ${notesText}`.trim();
   const handleSubmitQuote = () => {
     if (!canSubmit) return;
 
+    console.log("🚀 Submit clicked - sending to parent");
+
     // Show popup
     setShowRedirectPopup(true);
 
     // Send data to parent CMS after short delay
     setTimeout(() => {
-      window.parent.postMessage(
-        {
-          type: "OPEN_PRICING_FORM",
-          data: {
-            name: contactName,
-            email: contactEmail,
-            phone: contactPhone,
-            message: buildEmailBody(),
-          },
+      const messageData = {
+        type: "OPEN_PRICING_FORM",
+        data: {
+          name: contactName,
+          email: contactEmail,
+          phone: contactPhone,
+          message: buildEmailBody(),
         },
-        "*" // Works for both staging and production
-      );
+      };
+
+      console.log("📤 Sending postMessage:", messageData);
+      console.log("📍 Target origin: *");
+      console.log("🪟 Parent window:", window.parent !== window ? "Found" : "NOT FOUND (not in iframe)");
+
+      try {
+        window.parent.postMessage(messageData, "*");
+        console.log("✅ postMessage sent successfully");
+      } catch (error) {
+        console.error("❌ postMessage failed:", error);
+      }
 
       // Hide popup after sending
       setTimeout(() => setShowRedirectPopup(false), 1000);
@@ -765,6 +801,36 @@ ${notesText}`.trim();
               <div className="w-12 h-12 border-4 border-neutral-200 border-t-black rounded-full animate-spin"></div>
               <h3 className="text-xl font-semibold text-neutral-900">Opening contact form...</h3>
               <p className="text-sm text-neutral-600">Please wait a moment</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Thank You Popup */}
+      {(() => {
+        console.log("🟢 IFRAME: Rendering check - showThankYou =", showThankYou);
+        return null;
+      })()}
+      {showThankYou && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-8 max-w-md mx-4 shadow-2xl border-2 border-green-500">
+            <div className="flex flex-col items-center text-center gap-4">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                <CheckCircle2 className="w-10 h-10 text-green-600" />
+              </div>
+              <h3 className="text-2xl font-bold text-neutral-900">Thank You!</h3>
+              <p className="text-base text-neutral-700">
+                Your quote request has been sent successfully. We&apos;ll get back to you shortly!
+              </p>
+              <button
+                onClick={() => {
+                  console.log("🔴 IFRAME: Close button clicked");
+                  setShowThankYou(false);
+                }}
+                className="mt-2 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>
