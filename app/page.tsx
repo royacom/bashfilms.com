@@ -439,12 +439,38 @@ export default function Home() {
 
     // Send data to parent CMS after short delay
     setTimeout(() => {
+      const monthLabel = months.find((m) => m.value === eventMonth)?.label || String(eventMonth);
+      const hotelText = hotelOption === "bash_pays" ? "Bash Films pays" : "Client provides";
+      const turnaroundText =
+        turnaround === "1w" ? "1 week" : turnaround === "2w" ? "2 weeks" : turnaround === "3w" ? "3 weeks" : "4 weeks";
+      const mealsText = meals === "yes" ? "Event provides breakfast & lunch (discount applied)" : "Crew per diems included";
+
       const messageData = {
         type: "OPEN_PRICING_FORM",
         data: {
+          // Contact Information
           name: contactName,
           email: contactEmail,
           phone: contactPhone,
+          eventTitle: eventTitle,
+          eventURL: eventURL,
+
+          // Event Details
+          startDate: `${monthLabel} ${eventDay}, ${eventYear}`,
+          location: location,
+          days: days.toString(),
+          rooms: rooms.toString(),
+          turnaround: turnaroundText,
+          hotel: location !== "Las Vegas" ? hotelText : "",
+          meals: mealsText,
+
+          // Pricing
+          price: displayPrice,
+
+          // Notes
+          notes: notesText,
+
+          // Complete formatted message for email
           message: buildEmailBody(),
         },
       };

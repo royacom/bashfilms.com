@@ -1,7 +1,7 @@
 <style>
-  .modal-dialog.modal-lg {
-    width: 700px;
-    max-width: 90%;
+  .modal-dialog.modal-xl {
+    width: 950px;
+    max-width: 95%;
   }
 
   .pricing-modal-header {
@@ -162,28 +162,111 @@
           <!-- Contact Information Card -->
           <div class="info-card">
             <h5>Contact Information</h5>
-            <div class="form-group-readonly">
-              <label>Name</label>
-              <input type="text" name="name" class="form-control" readonly>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group-readonly">
+                  <label>Name</label>
+                  <input type="text" name="name" class="form-control" readonly>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group-readonly">
+                  <label>Email</label>
+                  <input type="email" name="email" class="form-control" readonly>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group-readonly">
+                  <label>Phone</label>
+                  <input type="text" name="photo" class="form-control" readonly>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group-readonly">
+                  <label>Event Title</label>
+                  <input type="text" name="eventTitle" class="form-control" readonly>
+                </div>
+              </div>
             </div>
             <div class="form-group-readonly">
-              <label>Email</label>
-              <input type="email" name="email" class="form-control" readonly>
-            </div>
-            <div class="form-group-readonly">
-              <label>Phone</label>
-              <input type="text" name="photo" class="form-control" readonly>
+              <label>Event URL</label>
+              <input type="text" name="eventURL" class="form-control" readonly>
             </div>
           </div>
 
-          <!-- Quote Details Card -->
+          <!-- Event Details Card -->
           <div class="info-card">
-            <h5>Quote Details</h5>
-            <div class="form-group-readonly">
-              <label>Complete Quote Information</label>
-              <textarea name="message" class="form-control" readonly></textarea>
+            <h5>Event Details</h5>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group-readonly">
+                  <label>Start Date</label>
+                  <input type="text" name="startDate" class="form-control" readonly>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group-readonly">
+                  <label>Location</label>
+                  <input type="text" name="location" class="form-control" readonly>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="form-group-readonly">
+                  <label>Days</label>
+                  <input type="text" name="days" class="form-control" readonly>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group-readonly">
+                  <label>Rooms</label>
+                  <input type="text" name="rooms" class="form-control" readonly>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group-readonly">
+                  <label>Turnaround</label>
+                  <input type="text" name="turnaround" class="form-control" readonly>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group-readonly">
+                  <label>Hotel Accommodations</label>
+                  <input type="text" name="hotel" class="form-control" readonly>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group-readonly">
+                  <label>Meals</label>
+                  <input type="text" name="meals" class="form-control" readonly>
+                </div>
+              </div>
             </div>
           </div>
+
+          <!-- Pricing Card -->
+          <div class="info-card">
+            <h5>Estimated Price</h5>
+            <div class="form-group-readonly">
+              <input type="text" name="price" class="form-control" readonly style="font-size: 24px; font-weight: 600; text-align: center; color: #007bff; background-color: #f0f8ff;">
+            </div>
+          </div>
+
+          <!-- Notes Card (if any) -->
+          <div class="info-card" id="notesCard" style="display: none;">
+            <h5>Additional Notes</h5>
+            <div class="form-group-readonly">
+              <textarea name="notes" class="form-control" readonly style="min-height: 100px;"></textarea>
+            </div>
+          </div>
+
+          <!-- Hidden field for complete email message -->
+          <input type="hidden" name="message">
         </div>
 
         <div class="modal-footer pricing-modal-footer">

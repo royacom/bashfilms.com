@@ -74,10 +74,37 @@ window.addEventListener('message', function(event) {
       }
 
       // Pre-fill your modal form fields
-      $('#pricingCalcModal input[name="name"]').val(event.data.data.name || '');
-      $('#pricingCalcModal input[name="email"]').val(event.data.data.email || '');
-      $('#pricingCalcModal input[name="photo"]').val(event.data.data.phone || ''); // Note: field name is "photo"
-      $('#pricingCalcModal textarea[name="message"]').val(event.data.data.message || '');
+      const data = event.data.data;
+
+      // Contact Information
+      $('#pricingCalcModal input[name="name"]').val(data.name || '');
+      $('#pricingCalcModal input[name="email"]').val(data.email || '');
+      $('#pricingCalcModal input[name="photo"]').val(data.phone || ''); // Note: field name is "photo"
+      $('#pricingCalcModal input[name="eventTitle"]').val(data.eventTitle || '');
+      $('#pricingCalcModal input[name="eventURL"]').val(data.eventURL || '');
+
+      // Event Details
+      $('#pricingCalcModal input[name="startDate"]').val(data.startDate || '');
+      $('#pricingCalcModal input[name="location"]').val(data.location || '');
+      $('#pricingCalcModal input[name="days"]').val(data.days || '');
+      $('#pricingCalcModal input[name="rooms"]').val(data.rooms || '');
+      $('#pricingCalcModal input[name="turnaround"]').val(data.turnaround || '');
+      $('#pricingCalcModal input[name="hotel"]').val(data.hotel || '');
+      $('#pricingCalcModal input[name="meals"]').val(data.meals || '');
+
+      // Pricing
+      $('#pricingCalcModal input[name="price"]').val(data.price || '');
+
+      // Notes (show/hide card based on content)
+      if (data.notes && data.notes.trim()) {
+        $('#pricingCalcModal textarea[name="notes"]').val(data.notes);
+        $('#pricingCalcModal #notesCard').show();
+      } else {
+        $('#pricingCalcModal #notesCard').hide();
+      }
+
+      // Hidden message field for email
+      $('#pricingCalcModal input[name="message"]').val(data.message || '');
 
       console.log('✅ Fields pre-filled successfully');
 
@@ -118,10 +145,30 @@ The pricing calculator sends the following data structure:
 {
   type: "OPEN_PRICING_FORM",
   data: {
-    name: "John Doe",                    // Contact name
-    email: "john@example.com",           // Contact email
-    phone: "555-123-4567",               // Contact phone
-    message: "Quote Request - ...\n\n..."  // Full formatted quote details (see below)
+    // Contact Information
+    name: "John Doe",
+    email: "john@example.com",
+    phone: "555-123-4567",
+    eventTitle: "Tech Conference 2025",
+    eventURL: "https://techconf.com",
+
+    // Event Details
+    startDate: "June 15, 2025",
+    location: "Las Vegas",
+    days: "3",
+    rooms: "2",
+    turnaround: "3 weeks",
+    hotel: "Bash Films pays",  // or "" if Las Vegas
+    meals: "Crew per diems included",  // or "Event provides breakfast & lunch (discount applied)"
+
+    // Pricing
+    price: "$8,450.00",
+
+    // Notes (optional)
+    notes: "We need rush delivery for keynote presentations.",
+
+    // Complete formatted message for email
+    message: "Quote Request - ...\n\n..."  // Full formatted quote (see below)
   }
 }
 ```
@@ -683,22 +730,48 @@ app.post('/submit-quote', async (req, res) => {
 The modal in `test.html` includes:
 
 ### Professional Design Features
-- **700px wide** modal (modal-lg)
+- **950px wide** modal (modal-xl) for comprehensive quote review
 - **Dark gradient header** (#1a1a1a to #2d2d2d)
-- **Two info cards** with subtle shadows
+- **Four info cards** with subtle shadows:
+  - Contact Information (2-column layout)
+  - Event Details (multi-column layout)
+  - Estimated Price (prominent display)
+  - Additional Notes (shown only if notes exist)
 - **Read-only fields** with gray background (#f5f5f5)
-- **Monospace font** for quote details (Courier New)
+- **All quote parameters** displayed as individual fields for easy review
 - **Responsive** mobile-friendly design
 - **Loading state** during submission
 - **AJAX submission** prevents page reload
 - **Success flow** sends message back to iframe
+- **Hidden message field** for complete email body
 
 ### Form Fields
 The modal form expects these field names:
+
+**Contact Information:**
 - `name="name"` - Contact name
 - `name="email"` - Contact email
 - `name="photo"` - Contact phone ⚠️ (Note: field is named "photo" not "phone")
-- `name="message"` - Complete quote details (formatted text)
+- `name="eventTitle"` - Event title
+- `name="eventURL"` - Event website URL
+
+**Event Details:**
+- `name="startDate"` - Event start date (formatted)
+- `name="location"` - Event location
+- `name="days"` - Number of days
+- `name="rooms"` - Number of simultaneous locations
+- `name="turnaround"` - Turnaround time (e.g., "3 weeks")
+- `name="hotel"` - Hotel accommodations text
+- `name="meals"` - Meals provision text
+
+**Pricing:**
+- `name="price"` - Estimated price (formatted with $)
+
+**Notes:**
+- `name="notes"` - Additional notes (textarea, optional)
+
+**Email:**
+- `name="message"` - Complete quote details (hidden field for email body)
 
 ### Styling
 All styles are inline in `test.html` for easy CMS integration. The modal automatically centers on screen and includes:
