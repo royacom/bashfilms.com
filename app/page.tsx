@@ -71,18 +71,72 @@ export default function Home() {
 
   // Form validation helpers
   const isNonEmpty = (s: string) => s.trim().length > 0;
-  const isValidEmail = (s: string) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s.trim());
-  const isValidPhone = (s: string) => {
-    const digits = String(s || "")
-      .split("")
-      .filter((ch) => ch >= "0" && ch <= "9").length;
-    return digits >= 7;
+
+  // HTML5 standard email validation with practical checks
+  const isValidEmail = (s: string) => {
+    const email = s.trim().toLowerCase();
+
+    // HTML5 email regex with 2+ character TLD requirement
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+    return (
+      emailRegex.test(email) &&
+      email.length <= 254 && // Max email length per RFC 5322
+      !email.startsWith(".") &&
+      !email.endsWith(".") &&
+      !email.includes("..") // No consecutive dots
+    );
   };
+
+  // International phone validation (ITU-T E.164 standard)
+  const isValidPhone = (s: string) => {
+    const phone = String(s || "").trim();
+
+    // Allow common international formats:
+    // (123) 456-7890, 123-456-7890, +1 123 456 7890, etc.
+    const phoneRegex =
+      /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,9}[-\s\.]?[0-9]{0,9}$/;
+
+    if (!phoneRegex.test(phone)) return false;
+
+    // Extract digits and validate count (7-15 digits per ITU-T E.164)
+    const digits = phone.replace(/\D/g, "");
+    if (digits.length < 7 || digits.length > 15) return false;
+
+    // Validate US area codes if applicable (can't start with 0 or 1)
+    if (digits.length === 10 || (digits.length === 11 && digits.startsWith("1"))) {
+      const areaCode = digits.length === 11 ? digits.substring(1, 4) : digits.substring(0, 3);
+      if (areaCode[0] === "0" || areaCode[0] === "1") return false;
+    }
+
+    return true;
+  };
+
   const canSubmit = isValidEmail(contactEmail) && isNonEmpty(eventTitle) && isValidPhone(contactPhone);
 
+  // Validation error messages
+  const getEmailErrorMessage = (): string | null => {
+    if (!emailTouched || contactEmail === "") return null;
+    const trimmed = contactEmail.trim();
+    if (!trimmed.includes("@")) return "Email must contain @";
+    if (!trimmed.includes(".")) return "Email must include a domain (e.g., .com)";
+    if (trimmed.length > 254) return "Email is too long";
+    if (!isValidEmail(contactEmail)) return "Please enter a valid email address";
+    return null;
+  };
+
+  const getPhoneErrorMessage = (): string | null => {
+    if (!phoneTouched || contactPhone === "") return null;
+    const digits = contactPhone.replace(/\D/g, "");
+    if (digits.length < 7) return `Phone must have at least 7 digits (currently ${digits.length})`;
+    if (digits.length > 15) return "Phone number is too long (max 15 digits)";
+    if (!isValidPhone(contactPhone)) return "Please enter a valid phone number";
+    return null;
+  };
+
   // Validation error flags
-  const emailError = emailTouched && contactEmail !== "" && !isValidEmail(contactEmail);
-  const phoneError = phoneTouched && contactPhone !== "" && !isValidPhone(contactPhone);
+  const emailError = getEmailErrorMessage() !== null;
+  const phoneError = getPhoneErrorMessage() !== null;
   const eventTitleError = eventTitleTouched && !isNonEmpty(eventTitle);
 
   // Hydration fix: set mounted and calculate default date on client only
@@ -708,7 +762,7 @@ ${notesText}`.trim();
             />
             {emailError && (
               <span id="email-error" className="text-xs text-red-600 mt-1">
-                Please enter a valid email address
+                {getEmailErrorMessage()}
               </span>
             )}
           </div>
@@ -728,7 +782,7 @@ ${notesText}`.trim();
             />
             {phoneError && (
               <span id="phone-error" className="text-xs text-red-600 mt-1">
-                Please enter a valid phone number (min 7 digits)
+                {getPhoneErrorMessage()}
               </span>
             )}
           </div>
