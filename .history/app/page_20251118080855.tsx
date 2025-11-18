@@ -1023,8 +1023,8 @@ export default function Home() {
 
       {/* Redirect Popup */}
       {showRedirectPopup && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 py-8">
-          <div className="bg-white rounded-2xl p-6 sm:p-8 max-w-sm w-full shadow-2xl max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 top-0 z-[9999] flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-4 sm:p-0 overflow-y-auto">
+          <div className="bg-white rounded-2xl p-8 max-w-sm w-full mx-auto shadow-2xl mb-safe">
             <div className="flex flex-col items-center text-center gap-4">
               <div className="w-12 h-12 border-4 border-neutral-200 border-t-black rounded-full animate-spin"></div>
               <h3 className="text-xl font-semibold text-neutral-900">Opening contact form...</h3>
@@ -1036,8 +1036,8 @@ export default function Home() {
 
       {/* Thank You Popup */}
       {showThankYou && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 py-8">
-          <div className="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl border-2 border-green-500 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-4 sm:p-0 overflow-y-auto">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-auto shadow-2xl border-2 border-green-500 mb-safe">
             <div className="flex flex-col items-center text-center gap-4">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
                 <CheckCircle2 className="w-10 h-10 text-green-600" />
