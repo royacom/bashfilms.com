@@ -7,7 +7,7 @@ import { CheckCircle2 } from "lucide-react";
 const PACKAGE = {
   title: "Conference Presentation Recording & Editing Pricing",
   inclusions: [
-    "1 day of on‑site pre‑production (operator arrival, setup, and connection tests)",
+    "1 day of on‑site pre‑production (crew arrival, setup, and connection tests)",
     "Travel (airfare + hotel + food per diem) included in the starting price",
     "Editing includes color grading, audio cleaning, and custom graphics branded for your event",
     "Human Videographers Only (NEVER robotic cameras)",
