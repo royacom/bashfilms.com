@@ -497,7 +497,7 @@ export default function Home() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl p-4 sm:p-8 pb-24 md:pb-8">
+    <div className="mx-auto max-w-4xl p-4 sm:p-8 pt-16 md:pt-0 md:pb-8">
       {/* Sticky Starting Price (desktop top-right) */}
       <div className="hidden md:block print:hidden">
         <div className="fixed right-4 top-4 z-50">
@@ -510,7 +510,7 @@ export default function Home() {
 
       {/* Sticky Starting Price (mobile bottom bar) */}
       <div
-        className="fixed inset-x-0 bottom-0 z-50 bg-white/95 backdrop-blur border-t shadow-md p-3 flex items-center justify-between md:hidden print:hidden"
+        className="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur border-b shadow-md p-3 flex items-center justify-between md:hidden print:hidden"
         role="status"
         aria-live="polite"
       >
