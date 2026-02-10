@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { CheckCircle2 } from "lucide-react";
 
 // ----------------- Package & Pricing -----------------
@@ -197,6 +197,52 @@ export default function Home() {
   useEffect(() => {
     if (location !== "Las Vegas" && days === 1) setDays(2);
   }, [location, days]);
+
+  // Send height to parent for auto-sizing iframe (fixes nested scrolling on mobile)
+  const sendHeightToParent = useCallback(() => {
+    if (typeof window === "undefined" || window.parent === window) return;
+
+    const height = Math.max(
+      document.body.scrollHeight,
+      document.documentElement.scrollHeight
+    );
+
+    window.parent.postMessage({
+      type: "IFRAME_RESIZE",
+      height: height
+    }, "*");
+  }, []);
+
+  // Auto-height iframe: report height to parent
+  useEffect(() => {
+    if (!mounted) return;
+
+    // Send initial height after a brief delay for layout to settle
+    const initialTimer = setTimeout(sendHeightToParent, 150);
+
+    // ResizeObserver for content changes
+    const resizeObserver = new ResizeObserver(() => {
+      sendHeightToParent();
+    });
+    resizeObserver.observe(document.body);
+
+    // Also update on window resize
+    window.addEventListener("resize", sendHeightToParent);
+
+    return () => {
+      clearTimeout(initialTimer);
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", sendHeightToParent);
+    };
+  }, [mounted, sendHeightToParent]);
+
+  // Update height when form sections expand/collapse
+  useEffect(() => {
+    if (mounted) {
+      const timer = setTimeout(sendHeightToParent, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [location, showRedirectPopup, showThankYou, mounted, sendHeightToParent]);
 
   // Pricing calculations
   const isComplexScope = rooms === 6 || days === 7;

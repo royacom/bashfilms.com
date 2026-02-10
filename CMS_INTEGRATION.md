@@ -4,6 +4,29 @@ This document explains how to integrate the Next.js Pricing Calculator with your
 
 ---
 
+## Iframe Embedding (Auto-Height - Recommended)
+
+Use this embedding code to eliminate nested scrolling issues on mobile. The iframe automatically resizes to match its content height.
+
+```html
+<!-- Auto-height iframe container -->
+<div id="pricing-calculator-container" style="width: 100%;">
+  <iframe
+    id="pricing-calculator-iframe"
+    src="https://nextjs-boilerplate-rosy-chi-59.vercel.app/"
+    style="width: 100%; border: 0; border-radius: 12px; min-height: 900px;"
+    scrolling="no"
+    allowfullscreen
+    loading="lazy"
+    title="Pricing Calculator">
+  </iframe>
+</div>
+```
+
+**Important**: Do NOT use the old fixed aspect-ratio container (`padding-bottom: 65%`). That causes nested scrolling on mobile.
+
+---
+
 ## Overview
 
 When a user fills out the pricing calculator and clicks "Submit quote", the following happens:
@@ -49,6 +72,15 @@ window.addEventListener('message', function(event) {
   if (!allowedOrigins.includes(event.origin)) {
     console.warn('⚠️ Rejected message from:', event.origin);
     console.log('💡 If this is your iframe, add this origin to allowedOrigins array:', event.origin);
+    return;
+  }
+
+  // Handle iframe height updates (auto-height for no nested scrolling)
+  if (event.data.type === 'IFRAME_RESIZE' && event.data.height) {
+    var iframe = document.getElementById('pricing-calculator-iframe');
+    if (iframe) {
+      iframe.style.height = (event.data.height + 50) + 'px';
+    }
     return;
   }
 
