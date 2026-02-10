@@ -543,7 +543,7 @@ export default function Home() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl p-4 sm:p-8 pt-16 md:pt-0 md:pb-8">
+    <div className="mx-auto max-w-4xl p-4 sm:p-8 pt-16 sm:pt-16 md:pt-8 md:pb-8">
       {/* Sticky Starting Price (desktop top-right) */}
       <div className="hidden md:block print:hidden">
         <div className="fixed right-4 top-4 z-50">
