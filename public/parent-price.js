@@ -113,8 +113,9 @@
       if (event.data && event.data.type === 'IFRAME_RESIZE') {
         var iframe = document.querySelector('.pricing-wrapper iframe');
         if (iframe && event.data.height) {
-          iframe.style.height = event.data.height + 'px';
-          iframe.style.minHeight = 'unset';
+          // Use !important to beat overrides.css min-height (up to 3340px)
+          iframe.style.setProperty('height', event.data.height + 'px', 'important');
+          iframe.style.setProperty('min-height', 'unset', 'important');
         }
       }
     } catch(e) {}
