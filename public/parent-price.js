@@ -51,6 +51,27 @@
 
   function updatePosition() {
     s.setProperty('top', getHeaderHeight() + 'px', 'important');
+
+    if (isMobile()) {
+      // Full-width bar on mobile
+      s.setProperty('left', '0', 'important');
+      s.setProperty('right', '0', 'important');
+      s.setProperty('width', 'auto', 'important');
+      s.setProperty('border-radius', '0', 'important');
+      s.setProperty('border', 'none', 'important');
+      s.setProperty('border-bottom', '1px solid #e5e5e5', 'important');
+    } else {
+      // Card on the right side on desktop
+      s.setProperty('left', 'auto', 'important');
+      s.setProperty('right', '24px', 'important');
+      s.setProperty('width', '256px', 'important');
+      s.setProperty('border-radius', '16px', 'important');
+      s.setProperty('border', '1px solid #e5e5e5', 'important');
+      s.setProperty('border-bottom', '1px solid #e5e5e5', 'important');
+      s.setProperty('padding', '16px', 'important');
+      s.setProperty('flex-direction', 'column', 'important');
+      s.setProperty('align-items', 'flex-start', 'important');
+    }
   }
 
   // Add top padding to iframe on mobile so content isn't hidden behind price bar
