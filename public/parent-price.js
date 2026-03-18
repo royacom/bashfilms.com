@@ -1,19 +1,18 @@
 (function() {
-  // Insert price bar inside .pricing-wrapper (before iframe) so it stays
-  // within the iframe area. Uses position:sticky so it sticks at the top
-  // only while scrolling through the calculator, not covering the CMS header.
   var wrapper = document.querySelector('.pricing-wrapper');
   if (!wrapper) return;
 
+  // Create price bar — fixed to viewport, only visible when iframe is on screen
   var bar = document.createElement('div');
   bar.id = 'bashStartingPrice';
   bar.innerHTML = '<span class="price-label">Starting Price</span><span class="price-value"></span>';
 
-  // Inline styles override overrides.css (which uses position:fixed + display:none)
   bar.style.cssText = [
-    'display:flex',
-    'position:sticky',
+    'display:none',
+    'position:fixed',
     'top:0',
+    'left:0',
+    'right:0',
     'z-index:99999',
     'background:rgba(255,255,255,0.95)',
     'backdrop-filter:blur(8px)',
@@ -26,15 +25,29 @@
     'font-family:Arial,Helvetica,sans-serif'
   ].join(';') + ';';
 
-  wrapper.insertBefore(bar, wrapper.firstChild);
+  document.body.appendChild(bar);
 
   var priceEl = bar.querySelector('.price-value');
+  var hasPrice = false;
+
+  // Show bar only when the iframe wrapper is in the viewport
+  function checkVisibility() {
+    if (!hasPrice) return;
+    var rect = wrapper.getBoundingClientRect();
+    var inView = rect.top < window.innerHeight && rect.bottom > 0;
+    bar.style.display = inView ? 'flex' : 'none';
+  }
+
+  window.addEventListener('scroll', checkVisibility, { passive: true });
+  window.addEventListener('resize', checkVisibility, { passive: true });
 
   function handler(event) {
     try {
       if (event.data && event.data.type === 'PRICE_UPDATE') {
         if (priceEl) {
           priceEl.textContent = event.data.data.price;
+          hasPrice = true;
+          checkVisibility();
         }
       }
       if (event.data && event.data.type === 'IFRAME_RESIZE') {
