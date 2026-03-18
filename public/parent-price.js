@@ -7,22 +7,22 @@
   bar.id = 'bashStartingPrice';
   bar.innerHTML = '<span class="price-label">Starting Price</span><span class="price-value"></span>';
 
-  bar.style.cssText = [
-    'display:none',
-    'position:fixed',
-    'left:0',
-    'right:0',
-    'z-index:99999',
-    'background:rgba(255,255,255,0.95)',
-    'backdrop-filter:blur(8px)',
-    '-webkit-backdrop-filter:blur(8px)',
-    'border-bottom:1px solid #e5e5e5',
-    'box-shadow:0 4px 6px -1px rgba(0,0,0,0.1)',
-    'padding:12px 16px',
-    'align-items:center',
-    'justify-content:space-between',
-    'font-family:Arial,Helvetica,sans-serif'
-  ].join(';') + ';';
+  // Use !important on all properties to beat overrides.css #bashStartingPrice rules
+  var s = bar.style;
+  s.setProperty('display', 'none', 'important');
+  s.setProperty('position', 'fixed', 'important');
+  s.setProperty('left', '0', 'important');
+  s.setProperty('right', '0', 'important');
+  s.setProperty('z-index', '99999', 'important');
+  s.setProperty('background', 'rgba(255,255,255,0.95)', 'important');
+  s.setProperty('backdrop-filter', 'blur(8px)', 'important');
+  s.setProperty('-webkit-backdrop-filter', 'blur(8px)', 'important');
+  s.setProperty('border-bottom', '1px solid #e5e5e5', 'important');
+  s.setProperty('box-shadow', '0 4px 6px -1px rgba(0,0,0,0.1)', 'important');
+  s.setProperty('padding', '12px 16px', 'important');
+  s.setProperty('align-items', 'center', 'important');
+  s.setProperty('justify-content', 'space-between', 'important');
+  s.setProperty('font-family', 'Arial,Helvetica,sans-serif', 'important');
 
   document.body.appendChild(bar);
 
@@ -31,26 +31,26 @@
 
   // Measure CMS header height to position bar below it
   function getHeaderHeight() {
-    // Desktop header
+    // Check which header is visible using getComputedStyle (works for fixed elements)
     var desktop = document.querySelector('#ry-section-header');
-    if (desktop && desktop.offsetHeight > 0 && desktop.offsetParent !== null) {
-      return desktop.offsetHeight;
+    if (desktop) {
+      var ds = window.getComputedStyle(desktop);
+      if (ds.display !== 'none' && ds.visibility !== 'hidden') {
+        return desktop.getBoundingClientRect().height;
+      }
     }
-    // Mobile header
     var mobile = document.querySelector('#theme2-smHeader');
-    if (mobile && mobile.offsetHeight > 0 && mobile.offsetParent !== null) {
-      return mobile.offsetHeight;
-    }
-    // Fallback: look for any visible sticky/fixed header
-    var header = document.querySelector('.ry-sticky-menu, .mobile-header');
-    if (header && header.offsetHeight > 0) {
-      return header.offsetHeight;
+    if (mobile) {
+      var ms = window.getComputedStyle(mobile);
+      if (ms.display !== 'none' && ms.visibility !== 'hidden') {
+        return mobile.getBoundingClientRect().height;
+      }
     }
     return 0;
   }
 
   function updatePosition() {
-    bar.style.top = getHeaderHeight() + 'px';
+    s.setProperty('top', getHeaderHeight() + 'px', 'important');
   }
 
   // Show bar only when the iframe wrapper is in the viewport
@@ -60,9 +60,9 @@
     var inView = rect.top < window.innerHeight && rect.bottom > 0;
     if (inView) {
       updatePosition();
-      bar.style.display = 'flex';
+      s.setProperty('display', 'flex', 'important');
     } else {
-      bar.style.display = 'none';
+      s.setProperty('display', 'none', 'important');
     }
   }
 
