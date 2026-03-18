@@ -1,10 +1,32 @@
 (function() {
-  // Create price bar element dynamically (CMS strips HTML from content editor)
-  // No inline styles — overrides.css handles all responsive styling
+  // Insert price bar inside .pricing-wrapper (before iframe) so it stays
+  // within the iframe area. Uses position:sticky so it sticks at the top
+  // only while scrolling through the calculator, not covering the CMS header.
+  var wrapper = document.querySelector('.pricing-wrapper');
+  if (!wrapper) return;
+
   var bar = document.createElement('div');
   bar.id = 'bashStartingPrice';
   bar.innerHTML = '<span class="price-label">Starting Price</span><span class="price-value"></span>';
-  document.body.appendChild(bar);
+
+  // Inline styles override overrides.css (which uses position:fixed + display:none)
+  bar.style.cssText = [
+    'display:flex',
+    'position:sticky',
+    'top:0',
+    'z-index:99999',
+    'background:rgba(255,255,255,0.95)',
+    'backdrop-filter:blur(8px)',
+    '-webkit-backdrop-filter:blur(8px)',
+    'border-bottom:1px solid #e5e5e5',
+    'box-shadow:0 4px 6px -1px rgba(0,0,0,0.1)',
+    'padding:12px 16px',
+    'align-items:center',
+    'justify-content:space-between',
+    'font-family:Arial,Helvetica,sans-serif'
+  ].join(';') + ';';
+
+  wrapper.insertBefore(bar, wrapper.firstChild);
 
   var priceEl = bar.querySelector('.price-value');
 
