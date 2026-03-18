@@ -26,6 +26,16 @@
 
   document.body.appendChild(bar);
 
+  // Immediately fix iframe scrolling — don't wait for IFRAME_RESIZE message
+  var iframe = document.querySelector('.pricing-wrapper iframe');
+  if (iframe) {
+    // Disable internal iframe scrolling to prevent dual-scroll on mobile
+    iframe.setAttribute('scrolling', 'no');
+    iframe.style.setProperty('overflow', 'hidden', 'important');
+    // On mobile, touch-action ensures parent handles all scrolling
+    iframe.style.setProperty('touch-action', 'pan-y', 'important');
+  }
+
   var priceEl = bar.querySelector('.price-value');
   var hasPrice = false;
 
