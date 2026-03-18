@@ -29,21 +29,21 @@
   var priceEl = bar.querySelector('.price-value');
   var hasPrice = false;
 
+  function isMobile() {
+    return window.innerWidth < 768;
+  }
+
   // Measure CMS header height to position bar below it
   function getHeaderHeight() {
-    // Check which header is visible using getComputedStyle (works for fixed elements)
+    // Mobile: hardcoded 70px per user specification
+    if (isMobile()) return 70;
+
+    // Desktop: measure actual header
     var desktop = document.querySelector('#ry-section-header');
     if (desktop) {
       var ds = window.getComputedStyle(desktop);
       if (ds.display !== 'none' && ds.visibility !== 'hidden') {
         return desktop.getBoundingClientRect().height;
-      }
-    }
-    var mobile = document.querySelector('#theme2-smHeader');
-    if (mobile) {
-      var ms = window.getComputedStyle(mobile);
-      if (ms.display !== 'none' && ms.visibility !== 'hidden') {
-        return mobile.getBoundingClientRect().height;
       }
     }
     return 0;
@@ -53,6 +53,16 @@
     s.setProperty('top', getHeaderHeight() + 'px', 'important');
   }
 
+  // Add top padding to iframe on mobile so content isn't hidden behind price bar
+  function updateIframePadding() {
+    var iframe = document.querySelector('.pricing-wrapper iframe');
+    if (iframe && isMobile()) {
+      iframe.style.setProperty('padding-top', '50px', 'important');
+    } else if (iframe) {
+      iframe.style.removeProperty('padding-top');
+    }
+  }
+
   // Show bar only when the iframe wrapper is in the viewport
   function checkVisibility() {
     if (!hasPrice) return;
@@ -60,6 +70,7 @@
     var inView = rect.top < window.innerHeight && rect.bottom > 0;
     if (inView) {
       updatePosition();
+      updateIframePadding();
       s.setProperty('display', 'flex', 'important');
     } else {
       s.setProperty('display', 'none', 'important');
