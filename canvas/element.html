@@ -19,12 +19,26 @@
     /* z-index: 99999; */
 "> </iframe></div>
 <script>
-window.addEventListener('message', function(event) {
-  if (event.data && event.data.type === 'PRICE_UPDATE') {
-    var el = document.getElementById('bashPriceValue');
-    if (el) el.textContent = event.data.data.price;
-  }
-});
+// Use onmessage property — immune to CMS stopImmediatePropagation()
+(function() {
+  var _prev = window.onmessage;
+  window.onmessage = function(event) {
+    try {
+      if (event.data && event.data.type === 'PRICE_UPDATE') {
+        var el = document.getElementById('bashPriceValue');
+        if (el) el.textContent = event.data.data.price;
+      }
+      if (event.data && event.data.type === 'IFRAME_RESIZE') {
+        var iframe = document.querySelector('.pricing-wrapper iframe');
+        if (iframe && event.data.height) {
+          iframe.style.height = event.data.height + 'px';
+          iframe.style.minHeight = 'unset';
+        }
+      }
+    } catch(e) {}
+    if (_prev) _prev.call(window, event);
+  };
+})();
 </script></div></div></div> </div> <div id="ry-footer"> <div class="col-xs-12 "><div class="col-xs-12 get-quote-section"><div class="col-xs-12 ry-container"><div class="col-xs-12 ry-heading"><div><h2>Get A Quote Today</h2></div><div class="ry-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M566.6 342.6C579.1 330.1 579.1 309.8 566.6 297.3L406.6 137.3C394.1 124.8 373.8 124.8 361.3 137.3C348.8 149.8 348.8 170.1 361.3 182.6L466.7 288L96 288C78.3 288 64 302.3 64 320C64 337.7 78.3 352 96 352L466.7 352L361.3 457.4C348.8 469.9 348.8 490.2 361.3 502.7C373.8 515.2 394.1 515.2 406.6 502.7L566.6 342.7z"></path></svg></div><div class="link"><a data-cke-saved-href="https://www.bashfilms.com/pricing-calculator.html" href="https://www.bashfilms.com/pricing-calculator.html" data-toggle-value="" data-toggle-default-visible="false" data-toggle-show-animation="" data-toggle-hide-animation="" data-toggle-show-animation-options="{}" data-toggle-hide-animation-options="{}" id="" class="" target="_self">link</a></div></div></div></div><div class="clearfix "></div><div class="col-xs-12 hp-contact-section"><div class="col-xs-12 ry-container"><div class="col-xs-12 ry-content"><div id="contact-block" class="col-xs-12 ry-flex"><div id="footer-logo" class="col-xs-12 col-lg-3 ry-each"><img src="https://static.royacdn.com/Site-bce04dfa-56bc-4d51-8528-9b15150b00e7/hp_assets/BF_logo_light_new.png" loading="lazy" alt="" class="img-responsive"></div><div class="col-xs-12 col-lg-9 btn-wrapper"><div id="hp-contact-info" class="col-xs-12 col-lg-7 ry-each"><div><a href="https://www.bashfilms.com/blog.html" target="_self"> <span class="blog-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M288 88C288 74.7 298.7 64 312 64C457.8 64 576 182.2 576 328C576 341.3 565.3 352 552 352C538.7 352 528 341.3 528 328C528 208.7 431.3 112 312 112C298.7 112 288 101.3 288 88zM144 160C170.5 160 192 181.5 192 208L192 432C192 458.5 213.5 480 240 480C266.5 480 288 458.5 288 432C288 405.5 266.5 384 240 384C231.2 384 224 376.8 224 368L224 304C224 295.2 231.2 288 240 288C319.5 288 384 352.5 384 432C384 511.5 319.5 576 240 576C160.5 576 96 511.5 96 432L96 208C96 181.5 117.5 160 144 160zM312 160C404.8 160 480 235.2 480 328C480 341.3 469.3 352 456 352C442.7 352 432 341.3 432 328C432 261.7 378.3 208 312 208C298.7 208 288 197.3 288 184C288 170.7 298.7 160 312 160z"></path></svg></span> Blog
 </a></div><div><a href="https://www.bashfilms.com/contact.html" target="_self"> <span class="blog-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M224.2 89C216.3 70.1 195.7 60.1 176.1 65.4L170.6 66.9C106 84.5 50.8 147.1 66.9 223.3C104 398.3 241.7 536 416.7 573.1C493 589.3 555.5 534 573.1 469.4L574.6 463.9C580 444.2 569.9 423.6 551.1 415.8L453.8 375.3C437.3 368.4 418.2 373.2 406.8 387.1L368.2 434.3C297.9 399.4 241.3 341 208.8 269.3L253 233.3C266.9 222 271.6 202.9 264.8 186.3L224.2 89z"></path></svg></span> Contact
 </a></div></div><div id="footer-social-block" class="col-xs-12 col-lg-5 ry-each"><div class="footer-social"><ul class="custom-social-wrapper"><div class="social-inner-wrap"> <li data-href="https://www.facebook.com/people/Bash-Films/100066646027522/"> <a href="https://www.facebook.com/people/Bash-Films/100066646027522/" target="_blank"> <svg width="20" height="20" version="1.1" class="SVG_facebook" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve"><path d="M341.3,85H388V3.6C379.9,2.5,352.2,0,319.9,0c-67.4,0-113.6,42.4-113.6,120.3V192H132v91h74.4v229h91.2V283h71.4l11.3-91

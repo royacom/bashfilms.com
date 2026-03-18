@@ -320,9 +320,14 @@ export default function Home() {
   // Send live price updates to parent page for fixed display
   useEffect(() => {
     if (!mounted) return;
-    try {
-      window.parent.postMessage({ type: "PRICE_UPDATE", data: { price: displayPrice } }, "*");
-    } catch { /* not in iframe */ }
+    const send = () => {
+      try {
+        window.parent.postMessage({ type: "PRICE_UPDATE", data: { price: displayPrice } }, "*");
+      } catch { /* not in iframe */ }
+    };
+    send();
+    const id = setInterval(send, 2000);
+    return () => clearInterval(id);
   }, [mounted, displayPrice]);
 
   // Build HTML email body for CMS form
@@ -552,27 +557,7 @@ export default function Home() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl p-4 sm:p-8 pt-16 sm:pt-16 md:pt-8 md:pb-8">
-      {/* Sticky Starting Price (desktop top-right) */}
-      <div className="hidden md:block print:hidden">
-        <div className="fixed right-4 top-4 z-50">
-          <div className="rounded-2xl border bg-white p-4 shadow-md w-64" role="status" aria-live="polite">
-            <div className="text-xs text-neutral-500">Starting Price</div>
-            <div className="text-2xl font-semibold text-neutral-900">{displayPrice}</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Sticky Starting Price (mobile top bar) */}
-      <div
-        className="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur border-b shadow-md p-3 flex items-center justify-between md:hidden print:hidden"
-        role="status"
-        aria-live="polite"
-      >
-        <span className="text-xs text-neutral-500">Starting Price</span>
-        <span className="text-xl font-semibold text-neutral-900">{displayPrice}</span>
-      </div>
-
+    <div className="mx-auto max-w-4xl p-4 sm:p-8 md:pt-8 md:pb-8">
       {/* Header + What's included */}
       <div className="rounded-2xl border bg-white p-5 sm:p-8 shadow-sm">
         <div className="mb-4">
