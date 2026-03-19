@@ -422,12 +422,10 @@ export default function Home() {
                         <td style="padding: 8px 0; font-size: 13px; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Turnaround:</td>
                         <td style="padding: 8px 0; font-size: 15px; color: #1a1a1a;">${turnaround === "1w" ? "1 week" : turnaround === "2w" ? "2 weeks" : turnaround === "3w" ? "3 weeks" : "4 weeks"}</td>
                       </tr>
-                      ${location !== "Las Vegas" ? `
                       <tr>
                         <td style="padding: 8px 0; font-size: 13px; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Hotel:</td>
-                        <td style="padding: 8px 0; font-size: 15px; color: #1a1a1a;">${hotelText}</td>
+                        <td style="padding: 8px 0; font-size: 15px; color: #1a1a1a;">${location !== "Las Vegas" ? hotelText : "N/A"}</td>
                       </tr>
-                      ` : ""}
                       <tr>
                         <td style="padding: 8px 0; font-size: 13px; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Meals:</td>
                         <td style="padding: 8px 0; font-size: 15px; color: #1a1a1a;">${meals === "yes" ? "Event provides breakfast & lunch (discount applied)" : "Crew per diems included"}</td>
@@ -521,7 +519,7 @@ export default function Home() {
           days: days.toString(),
           rooms: rooms.toString(),
           turnaround: turnaroundText,
-          hotel: location !== "Las Vegas" ? hotelText : "",
+          hotel: location !== "Las Vegas" ? hotelText : "N/A",
           meals: mealsText,
 
           // Pricing
