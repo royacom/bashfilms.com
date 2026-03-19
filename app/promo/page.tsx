@@ -367,12 +367,10 @@ export default function PromoCalcPage() {
                         <td style="padding: 8px 0; font-size: 15px; color: #1a1a1a;">${editingPresetText}</td>
                       </tr>
                       ` : ""}
-                      ${location !== "Las Vegas" ? `
                       <tr>
                         <td style="padding: 8px 0; font-size: 13px; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Hotel:</td>
-                        <td style="padding: 8px 0; font-size: 15px; color: #1a1a1a;">${hotelText}</td>
+                        <td style="padding: 8px 0; font-size: 15px; color: #1a1a1a;">${location !== "Las Vegas" ? hotelText : "N/A"}</td>
                       </tr>
-                      ` : ""}
                     </table>
                   </td>
                 </tr>
@@ -459,7 +457,7 @@ export default function PromoCalcPage() {
           videographers: videographers.toString(),
           deliverable: deliverableText,
           editingOption: deliverable === "editing" ? editingPresetText : "",
-          hotel: location !== "Las Vegas" ? hotelText : "",
+          hotel: location !== "Las Vegas" ? hotelText : "N/A",
 
           // Pricing
           price: displayPrice,
